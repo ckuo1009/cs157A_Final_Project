@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<!-- jQuery UI CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+
+<!-- jQuery first, ensure it's from a CDN and not a local file -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<!-- Popper.js for Bootstrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- jQuery UI JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<!-- DataTables JS, ensure it's a version that does not include jQuery -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+
+<style>
+    .dataTables_length {
+        float: left !important;
+        padding-top: 8px !important;
+    }
+
+    .dataTables_filter {
+        float: right !important;
+        padding-top: 8px !important;
+    }
+    
+/* ... 你现有的 CSS ... */
+
+/* 添加这个样式来改变被选中行的背景色 */
+#myTable tbody tr.selected {
+    background-color: #000000; /* 你想要的颜色，这里是黑色 */
+    color: #ffffff; /* 可选的：改变文字颜色，这里是白色 */
+}
+.menu-label {
+        font-size: larger;
+        font-weight: bold;
+    }
+    .modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+    
+</style>
+</head>
+<body>
+<div style="height: 50px;"></div>
+
+<div id="buttonContainer" style="display: flex; justify-content: center; padding-bottom: 20px;">
+    <div style="position: relative; right: 50px;">
+        <button id="searchButton" class="btn btn-primary btn-lg" style="font-size: 20px;">Search</button>
+        <button id="addButton" class="btn btn-success btn-lg" style="font-size: 20px;">Add</button>
+    </div>
+</div>
+
+<div id="dataTableContainer" style="display: none;">
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>權限類型</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+  <div id="addModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">                        
+                    <h4 class="modal-title">新增</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+               <div class="modal-body">                    
+    <form id="addForm">
+        <div class="form-group">
+            <label>權限類型</label>
+            <input type="text" name="permissionType" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>選擇此權限類型需求頁面</label>
+             <label>選項</label>
+            <div id="menuContainer"></div>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="submit">
+        </div>
+    </form>
+</div>
+            </div>
+        </div>
+    </div>
+    
+  <div id="editModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">                        
+                <h4 class="modal-title">修改</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">                    
+                <form id="editForm">
+                    <div class="form-group">
+                        <label>權限類型</label>
+                        <input type="text" name="permissionType" class="form-control" required disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>選擇此權限類型需修改頁面</label>
+                        <label>選項</label>
+                        <div id="editMenuContainer"></div> <!-- changed to unique id -->
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="submit">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+    <!-- add confirm  -->
+   <div id="alertModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="alertMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- delete  -->
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="messageModalBody">
+                <!-- The server's message will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<script>
+$(document).ready(function(){
+    var table;
+
+    $('#searchButton').click(function() {
+        $('#dataTableContainer').show();
+
+        if ( !$.fn.DataTable.isDataTable('#myTable') ) {
+        	table = $('#myTable').DataTable({
+        	    select: {
+        	        style: 'single'
+        	    },
+        	    ajax: {
+        	        url: 'pageManaServlet',
+        	        type: 'POST',
+        	        data: function (d) {
+        	            d.type = 'search';
+        	            return d;
+        	        },
+        	        dataSrc: function (json) {
+        	            return json.data;
+        	        },
+        	        dataType: 'json'
+        	    },
+        	    columns: [
+        	        { data: 0 },
+        	        { data: 1 },
+        	        { 
+        	            data: null,
+        	            render: function ( data, type, row ) {
+        	                if(row[0] == "0"){
+        	                    return "";  // no button for id "0"
+        	                } else {
+        	                    return '<button class="btn btn-warning btn-sm">Edit</button> <button class="btn btn-danger btn-sm">Delete</button>';
+        	                }
+        	            },
+        	            orderable: false,
+        	        }
+        	    ],
+        	});
+
+            table.on('select', function (e, dt, type, indexes) {
+                if (type === 'row') {
+                    var data = table.row(indexes).data();
+                    $('#deleteButton').show();
+                    $('#modifyButton').show();
+                }
+            });
+
+            table.on('deselect', function (e, dt, type, indexes) {
+                if (type === 'row') {
+                    $('#deleteButton').hide();
+                    $('#modifyButton').hide();
+                }
+            });
+        } else {
+            table.ajax.reload(null, false); // 保持分页、搜索等状态
+        }
+    });
+
+    $('#myTable tbody').on('click', 'button.btn-danger', function () {
+        var data = table.row($(this).parents('tr')).data();
+        console.log("Delete button clicked for the following row:", data);
+    });
+
+    $('#myTable tbody').on('click', 'button.btn-warning', function () {
+        var data = table.row($(this).parents('tr')).data();
+        console.log("Edit button clicked for the following row:", data);
+    });
+
+   
+    
+    $('#addButton').click(function() {
+        $('#addForm')[0].reset();
+        $('#addModal').modal('show');
+
+      
+        
+        // 從伺服器取得主菜單和子菜單的資料
+        $.ajax({
+            url: 'pageManaServlet',
+            type: 'POST',
+            data: { type: 'add' },
+            dataType: 'json',
+            success: function(json) {
+                $('#menuContainer').empty();
+                Object.entries(json).forEach(function([mainMenu, subMenus], i) {
+                    var mainMenuId = 'mainMenu' + i;
+                    var $mainMenuDiv = $('<div class="form-check"></div>');
+                    $mainMenuDiv.append(
+                        '<input class="form-check-input" type="checkbox" id="' + mainMenuId + '" value="' + mainMenu + '">' +
+                        '<label class="form-check-label" for="' + mainMenuId + '"><strong>' + mainMenu + '</strong></label>'
+                    );
+                    $('#menuContainer').append($mainMenuDiv);
+                    
+                    subMenus.forEach(function(subMenu, j) {
+                        var subMenuId = 'subMenu' + i + '_' + j;
+                        var $subMenuDiv = $('<div class="form-check"></div>');
+                        $subMenuDiv.append(
+                            '<input class="form-check-input" type="checkbox" id="' + subMenuId + '" value="' + subMenu + '" data-main-menu-id="' + mainMenuId + '" disabled>' +
+                            '<label class="form-check-label" for="' + subMenuId + '">' + subMenu + '</label>'
+                        );
+                        $('#menuContainer').append($subMenuDiv);
+                    });
+                });
+
+                // 主菜單的選擇框被點擊時啟用或禁用相應的子菜單選擇框
+                $('input[data-main-menu-id]').prop('disabled', true);
+                $('input[id^="mainMenu"]').click(function() {
+                    var isChecked = $(this).is(':checked');
+                    $('input[data-main-menu-id="' + this.id + '"]').prop('disabled', !isChecked).prop('checked', isChecked);
+                });
+            }
+        });
+    });
+    
+    $('#addForm').submit(function(e) {
+        e.preventDefault();
+
+        
+        
+        var permissionType = $('input[name="permissionType"]').val();
+        if (!permissionType) {
+            // 如果没有输入权限类型，显示模态框并提示用户
+            $('#alertMessage').text('你尚未輸入');
+            $('#alertModal').modal('show');
+            return;
+        }
+        var selectedMainMenu = $('input[id^="mainMenu"]:checked').map(function() {
+            return $(this).val();
+        }).get();
+        var selectedSubMenu = $('input[id^="subMenu"]:checked').map(function() {
+            return $(this).val();
+        }).get();
+        
+        if (selectedMainMenu.length === 0 && selectedSubMenu.length === 0) {
+            $('#alertMessage').text('Please select at least one option');
+            $('#alertModal').modal('show');
+            return;
+        }
+
+
+        $.ajax({
+            url: 'pageManaServlet',
+            type: 'POST',
+            data: { 
+                type: 'addConfirm',
+                permissionType: permissionType,
+                selectedMainMenu: JSON.stringify(selectedMainMenu),
+                selectedSubMenu: JSON.stringify(selectedSubMenu)
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#addModal').modal('hide');
+               
+                if (response.status === 'success') {
+                    $('#statusMessage').text('新增成功！');
+                    // 显示模态框，并使用服务器返回的消息更新模态框的文本
+                    $('#alertMessage').text(response.message);
+                    $('#alertModal').modal('show');
+                } else {
+                    $('#statusMessage').text('添加失败：' + response.message);
+                    // 显示模态框，并使用服务器返回的消息更新模态框的文本
+                    $('#alertMessage').text(response.message);
+                    $('#alertModal').modal('show');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        });
+    });
+    $('#myTable tbody').on('click', 'button.btn-danger', function () {
+        var data = table.row($(this).parents('tr')).data();
+        var id = data[0];  // Assuming the ID is the first element in the data array
+
+        $.ajax({
+            type: "POST",
+            url: "pageManaServlet",  
+            data: {
+                "type": "delete",
+                "id": id
+            },
+            success: function(response) {
+                // Use 'response.message' to get the message from the server
+            	$('#messageModalBody').text(response.message);
+                $('#messageModal').modal('show');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // This is the callback if the request fails for some reason
+                alert('An error occurred... Look at the console (F12 or Ctrl+Shift+I, Console tab) for more information!');
+                console.log('jqXHR:', jqXHR);
+                console.log('textStatus:', textStatus);
+                console.log('errorThrown:', errorThrown);
+                
+                $('#messageModalBody').text('An error occurred. Check the console for more information.');
+                $('#messageModal').modal('show');
+            }
+        });
+    });
+    $('#messageModal').on('hidden.bs.modal', function (e) {
+        table.ajax.reload(null, false);
+    });
+ // Edit button click event
+    $('#myTable tbody').on('click', 'button.btn-warning', function () {
+        var data = table.row($(this).parents('tr')).data();
+        console.log("Edit button clicked for the following row:", data);
+
+        // Reset form
+        $('#addForm')[0].reset();
+        $('#editModal').modal('show');
+
+        // 從伺服器取得主菜單和子菜單的資料，以及选定行的相关数据
+      
+    });
+ 
+ // Function to convert object to array
+    function objectToArray(obj) {
+        return Object.keys(obj).map(function(key) {
+            return [key].concat(obj[key]);
+        });
+    }
+
+    // Edit button click event
+    $('#myTable tbody').on('click', 'button.btn-warning', function () {
+        var data = table.row($(this).parents('tr')).data();
+        var id = data[0];
+
+        // Reset form
+        $('#editForm')[0].reset();
+
+        // Get data from server
+        $.ajax({
+            url: 'pageManaServlet',
+            type: 'POST',
+            data: {
+                type: 'edit',
+                id: id
+            },
+            dataType: 'json',
+            success: function(res) {
+                console.log(res); 
+                var permissionType = res.name; 
+
+                // Convert the objects to arrays
+                var jsonObjectMain = objectToArray(res.jsonObjectMain); 
+                var jsonObjectSelect = objectToArray(res.jsonObjectSelect);
+
+                console.log(permissionType); // Log the permissionType
+                console.log(jsonObjectMain); // Log the jsonObjectMain
+                console.log(jsonObjectSelect); // Log the jsonObjectSelect
+
+                // Populate form fields
+                $('input[name="permissionType"]').val(permissionType).attr('readonly', true);
+
+                $('#editMenuContainer').empty();
+
+                // Create a function to check if a menu item is selected
+  	function isSelected(mainMenu, subMenu) {
+	for (var i = 0; i < jsonObjectSelect.length; i++) {
+		var selectEntry = jsonObjectSelect[i];
+		if (selectEntry[0] === mainMenu) {
+			if (!subMenu) {
+				return true;
+				} else if (selectEntry.includes(subMenu)) {
+			return true;
+							}
+								}
+									}
+							return false;
+								}
+
+
+
+                // Populate main menus and sub menus
+                jsonObjectMain.forEach(function(mainMenuEntry, i) {
+                    var mainMenuKey = mainMenuEntry[0];
+                    var mainMenuId = 'mainMenu' + i;
+                    var subMenus = mainMenuEntry.slice(1);
+                    var mainMenuChecked = isSelected(mainMenuKey);
+
+                    var $mainMenuDiv = $('<div class="form-check"></div>');
+                    $mainMenuDiv.append(
+                        '<input class="form-check-input" type="checkbox" id="' + mainMenuId + '" value="' + mainMenuKey + '"' + (mainMenuChecked ? ' checked' : '') + '>' +
+                        '<label class="form-check-label" for="' + mainMenuId + '"><strong>' + mainMenuKey + '</strong></label>'
+                    );
+                    $('#editMenuContainer').append($mainMenuDiv);
+
+                    subMenus.forEach(function(subMenu, j) {
+                        var subMenuId = 'subMenu' + i + '_' + j;
+                        var subMenuChecked = isSelected(mainMenuKey, subMenu);
+                        var $subMenuDiv = $('<div class="form-check"></div>');
+                        $subMenuDiv.append(
+                            '<input class="form-check-input" type="checkbox" id="' + subMenuId + '" value="' + subMenu + '" data-main-menu-id="' + mainMenuId + '"' + (subMenuChecked ? ' checked' : '') + (mainMenuChecked ? '' : ' disabled') + '>' +
+                            '<label class="form-check-label" for="' + subMenuId + '">' + subMenu + '</label>'
+                        );
+                        $('#editMenuContainer').append($subMenuDiv);
+                    });
+                });
+
+                // Enable or disable sub menu checkboxes when the corresponding main menu checkbox is clicked
+                $('input[data-main-menu-id]').prop('disabled', true);
+                $('input[id^="mainMenu"]').click(function() {
+                    var isChecked = $(this).is(':checked');
+                    $('input[data-main-menu-id="' + this.id + '"]').prop('disabled', !isChecked).prop('checked', isChecked);
+                });
+
+                // Show modal after the form is populated
+                $('#editModal').modal();
+                console.log('Showing modal');
+                $('#editModal').modal('show');
+                $('#editModal').on('hidden.bs.modal', function (e) {
+                    table.ajax.reload(null, false); // Reload DataTable without resetting pagination
+                });
+                
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textExpception, errorThrown);
+            }
+        });
+    });
+    $('#editModal').on('hidden.bs.modal', function (e) {
+        // Reset the readonly attribute of the input field
+        $('input[name="permissionType"]').attr('readonly', false);
+    }) 
+    
+    
+    
+    
+ // Edit form submit event
+    $('#editForm').submit(function(e) {
+        e.preventDefault();
+
+        // Gather data from the form
+        var permissionType = $('input[name="permissionType"]').val();
+        var selectedMainMenu = [];
+        var selectedSubMenu = [];
+
+        // Gather selected main menu and sub menu
+        $('#editMenuContainer input[type="checkbox"]:checked').each(function() {
+            var $this = $(this);
+            var id = $this.attr('id');
+            if (id.startsWith('mainMenu')) {
+                selectedMainMenu.push($this.val());
+            } else {
+                selectedSubMenu.push($this.val());
+            }
+        });
+
+        // Check if user has selected at least one menu
+        if (selectedMainMenu.length === 0 && selectedSubMenu.length === 0) {
+            $('#alertMessage').text('請至少選擇一個選項');
+            $('#alertModal').modal('show');
+            return;
+        }
+
+        // Perform AJAX request
+        $.ajax({
+            url: 'pageManaServlet',
+            type: 'POST',
+            data: { 
+                type: 'editConfirm',
+                permissionType: permissionType,
+                selectedMainMenu: JSON.stringify(selectedMainMenu),
+                selectedSubMenu: JSON.stringify(selectedSubMenu)
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#editModal').modal('hide');
+
+                if (response.status === 'success') {
+                    $('#statusMessage').text('修改成功！');
+                    // 显示模态框，并使用服务器返回的消息更新模态框的文本
+                    $('#alertMessage').text(response.message);
+                    $('#alertModal').modal('show');
+                } else {
+                    $('#statusMessage').text('修改失败：' + response.message);
+                    // 显示模态框，并使用服务器返回的消息更新模态框的文本
+                    $('#alertMessage').text(response.message);
+                    $('#alertModal').modal('show');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        });
+    });
+
+
+});
+</script>
+
+
+
+
+</body>
+</html> 

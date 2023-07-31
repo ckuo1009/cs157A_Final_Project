@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="BIG5">
+<title>Log in</title>
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<!-- jQuery first -->
+<script src="js/jquery-3.3.1.js"></script>
+<!-- Popper.js for Bootstrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<!-- Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- Other JS -->
+
+<style>
+/* 全域設置 */
+body {
+    background-color: #000;
+    font-family: 'Arial', sans-serif;
+}
+
+.container-custom {
+    margin-top: 100px; /* 调整这个数值来改变区块顶部的 margin，单位是像素 */
+}
+
+h2 {
+    color: #fff;
+    font-size: 3rem;
+}
+
+/* 圖片大小設定 */
+.profile-image-pic {
+    width: 300px;
+}
+
+.form-custom-width {
+    max-width: 1000px; /* or whatever width you want */
+    margin: auto;
+}
+
+.btn {
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+}
+
+/* 登入按鈕的顏色設置 */
+.btn.btn-color {
+    background-color: #007BFF;
+    border-color: #007BFF;
+    color: #fff;
+}
+
+/* 電子郵件說明文字的風格設置 */
+#emailHelp {
+    font-size: 1.5rem;
+}
+
+#emailHelp a {
+    font-size: 1.3rem;
+    padding: 0.3rem 0.7rem;
+}
+</style>
+
+</head>
+
+<body style="display: none;">
+<div id="loading"></div>
+<div id="resultModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Login Result</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="modal-body-success" class="modal-body">
+        <p>Login Successfully!</p>
+      </div>
+      <div id="modal-body-fail" class="modal-body" style="display: none;">
+        <p>Login Failed!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container container-custom">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="card my-5 p-5 bg-dark text-white">
+          <h2 class="text-center mb-4">SINBON</h2>
+          
+          <form class="form-custom-width" id="loginForm">
+
+            <div class="text-center">
+              <!-- <img src="images/1519875200466.jpg"
+                alt="profile"> -->
+            </div>
+
+            <div class="input-custom-width mb-3">
+              <input type="text" class="form-control form-control-lg" id="Username" aria-describedby="emailHelp"
+                placeholder="@sinbon.com">
+            </div>
+            <div class="input-custom-width mb-3">
+              <input type="password" class="form-control form-control-lg" id="password" placeholder="Password">
+            </div>
+            <div class="input-custom-width text-center">
+              <button type="submit" class="btn btn-color btn-lg px-5 mb-5 w-100">Login</button>
+            </div>
+            <div id="emailHelp" class="form-text text-center mb-5 text-white">
+             <p>Not Registered?</p>
+             <br>
+              <a href="register.html" class="text-white fw-bold btn btn-color btn-sm create-account"> Create an Account</a>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<script>
+
+$(document).ready(function() {
+  $("body").fadeIn(500);
+
+  $('.create-account').on('click', function(event) {
+    event.preventDefault(); 
+    $('body').fadeOut(1500, function() {
+      window.location.href = "register.html";
+    });
+  });
+
+  $('#loginForm').on('submit', function(event) {
+    event.preventDefault(); 
+    $("#loading").show();
+
+    var username = $('#Username').val();
+    var password = $('#password').val();
+
+    $.ajax({
+    	  type: 'POST',
+    	  url: 'LoginServlet', 
+    	  data: {username: username, password: password},
+    	  success: function(response) {
+    		  console.log(response);
+    	    $("#loading").hide();
+    	    if(response.status === "success") {
+    	      $("#modal-body-success").show();
+    	      $("#modal-body-fail").hide();
+    	      $("#resultModal").modal('show');
+    	      setTimeout(function() {
+    	        $("#resultModal").modal('hide');
+    	        window.location.href = "index.html";
+    	      }, 600);
+    	    } else {
+    	      $("#modal-body-fail").show();
+    	      $("#modal-body-success").hide();
+    	      $("#resultModal").modal('show');
+    	    }
+    	  },
+    	  error: function() {
+    		  console.log(response);
+    	    $("#loading").hide();
+    	  }
+    	});
+
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+
+ <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    
+     <!-- jQuery first -->
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <!-- Popper.js for Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- jQuery UI JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+</head>
+<body>
+     <div class="container mt-5">
+       <div class="d-flex justify-content-center">
+    <button id="searchButton" class="btn btn-success btn-sm mr-2">頁面搜尋</button>
+    <button id="mainMenuButton" class="btn btn-success btn-sm mr-5">Main Menu 搜尋</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPageModal"> 新增頁面</button>
+    <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#addMenuModal">新增 Menu </button>
+</div>
+        <table id="dataTable" class="display mt-3">
+            <thead>
+                <tr>
+                    <th>Page Name</th>
+                    <th>Page HTML</th>
+                    <th>Page ID</th>
+                    <th>Prev ID</th>
+                    <th>Prev Name</th>
+                     <th>Status</th>
+        			<th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    
+    
+    <!--新增頁面 Modal -->
+<div class="modal fade" id="addPageModal" tabindex="-1" aria-labelledby="addPageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addPageModalLabel">新增頁面</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addPageForm">
+          <div class="form-group">
+            <label for="pageName">Page Name (顯示名稱)</label>
+            <input type="text" class="form-control" id="pageName" required>
+          </div>
+          <div class="form-group">
+            <label for="pageHTML">Page HTML (.html結尾)</label>
+            <input type="text" class="form-control" id="pageHTML" required pattern=".*\.html$">
+          </div>
+          <div class="form-group">
+            <label for="pageID">Page ID (html id)</label>
+            <input type="text" class="form-control" id="pageID" required>
+          </div>
+          <div class="form-group">
+            <label for="menuList">Menu</label>
+            <select class="form-control" id="menuList"></select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+        <button type="submit" class="btn btn-primary" form="addPageForm">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+			
+
+
+<!-- 新增 Menu Modal -->
+<div class="modal fade" id="addMenuModal" tabindex="-1" aria-labelledby="addMenuModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addMenuModalLabel">新增 Menu</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addMenuForm">
+          <div class="form-group">
+            <label for="menuName">Menu Name</label>
+            <input type="text" class="form-control" id="menuName" required>
+          </div>
+          <div class="form-group">
+            <label for="menuID">Menu ID</label>
+            <input type="text" class="form-control" id="menuID" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+        <button type="submit" class="btn btn-primary" form="addMenuForm">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+
+$(document).ready(function() {
+    var table = $('#dataTable').DataTable();
+
+    $('#searchButton').click(function() {
+        $.ajax({
+            url: 'addPageServlet', 
+            type: 'POST',
+            data: {
+                type: 'page_search'
+            },
+            dataType: 'json',
+            success: function(response) {
+                var pageData = response.page_data;
+                table.clear();
+                table.columns(0).header().to$().text('Page Name');
+                table.columns(1).header().to$().text('Page HTML');
+                table.columns(2).header().to$().text('Page ID');
+                table.columns(3).header().to$().text('Prev ID');
+                table.columns(4).header().to$().text('Prev Name');
+                table.columns(5).header().to$().text('Status');
+                table.columns(6).header().to$().text('Action');
+                
+                // Make all columns visible
+                for (var i = 0; i < 7; i++) {
+                    table.columns(i).visible(true);
+                }
+
+                $.each(pageData, function(i, page) {
+                    var status = page[5]; // Assuming the status is at index 5 in the page data
+                    var statusColor = status === 'y' ? 'green' : 'red';
+                    var statusText = status === 'y' ? '啟用中' : '停用中';
+                    var buttonText = status === 'y' ? '停用' : '啟用';
+                    var buttonColor = status === 'y' ? 'btn-danger' : 'btn-success';
+
+                    var actionButtons = `<button class="btn ${buttonColor}" id="actionButton${page[2]}" data-page-id="${page[2]}" data-current-status="${status}">${buttonText}</button>`;
+
+                    table.row.add([
+                        page[0], // Page Name
+                        page[1], // Page HTML
+                        page[2], // Page ID
+                        page[3], // Prev ID
+                        page[4],  // Prev Name
+                        `<span style="color: ${statusColor};">${statusText}</span>`, // Status
+                        actionButtons // Action buttons
+                    ]);
+                });
+                table.draw();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+            }
+        });
+    });
+
+    $('#mainMenuButton').click(function() {
+        $.ajax({
+            url: 'addPageServlet', 
+            type: 'POST',
+            data: {
+                type: 'main_search'
+            },
+            dataType: 'json',
+            success: function(response) {
+                var mainData = response.main_data;
+                table.clear();
+                table.columns(0).header().to$().text('Menu Name');
+                table.columns(1).header().to$().text('Menu ID');
+                table.columns(5).header().to$().text('Status');
+                table.columns(6).header().to$().text('Action');
+                // Hide unnecessary columns
+                table.columns(2).visible(false);
+                table.columns(3).visible(false);
+                table.columns(4).visible(false);
+                // Show the new columns
+                table.columns(5).visible(true);
+                table.columns(6).visible(true);
+
+                $.each(mainData, function(i, main) {
+                    console.log(main); // Check if data is coming in
+                    var status = main[2];
+                    var statusColor = status === 'y' ? 'green' : 'red';
+                    var statusText = status === 'y' ? '啟用中' : '停用中';
+                    var buttonText = status === 'y' ? '停用' : '啟用';
+                    var buttonColor = status === 'y' ? 'btn-danger' : 'btn-success';
+
+                    var actionButtons = `<button class="btn ${buttonColor}" id="mainActionButton${main[1]}" data-menu-id="${main[1]}" data-current-status="${status}">${buttonText}</button>`;
+
+
+                    table.row.add([
+                        main[0], // Menu Name
+                        main[1], // Menu ID
+                        null,
+                        null,
+                        null,
+                        `<span style="color: ${statusColor};">${statusText}</span>`, // Status
+                        actionButtons // Action buttons
+                    ]).draw(); // Call draw after adding a row
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+            }
+        });
+    });
+
+    $('#addPageModal').on('show.bs.modal', function (event) {
+        $.ajax({
+            url: 'addPageServlet', 
+            type: 'POST',
+            data: {
+                type: 'add_page'
+            },
+            dataType: 'json',
+            success: function(response) {
+                var menuList = response.menu_list;
+                var menuSelect = $('#menuList');
+                menuSelect.empty();
+                $.each(menuList, function(i, menu) {
+                    menuSelect.append('<option value="' + menu + '">' + menu + '</option>');
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+            }
+        });
+    });
+    
+	// 新增頁面 提交
+    $('#addPageForm').on('submit', function(e) {
+    	 e.preventDefault();
+
+         // get form data
+         var pageName = $('#pageName').val();
+         var pageHTML = $('#pageHTML').val();
+         var pageID = $('#pageID').val();
+         var menuList = $('#menuList').val();
+
+         $.ajax({
+             url: 'addPageServlet', 
+             type: 'POST',
+             data: {
+                 type: 'add_page_Confirm',
+                 page_name: pageName,
+                 html: pageHTML,
+                 page_id: pageID,
+                 prev_name: menuList
+             },
+             dataType: 'json',
+             success: function(response) {
+                 var status = response.status;
+                 var message = response.message;
+
+                 if (status == "success") {
+                     // display message and close modal
+                     alert("新增頁面成功: " + message);
+                     $('#addPageModal').modal('hide');
+                 } else {
+                     // display error message
+                     alert("新增頁面失敗: " + message);
+                 }
+             },
+             error: function(jqXHR, textStatus, errorThrown) {
+                 console.error(textStatus, errorThrown);
+                 alert("新增頁面失敗: " + textStatus);
+             }
+         });
+     
+    });
+    $('#addMenuForm').on('submit', function(e) {
+        e.preventDefault();
+
+        var menuName = $('#menuName').val().trim();
+        var menuID = $('#menuID').val().trim();
+
+        // 防止空白输入
+        if (!menuName || !menuID) {
+            alert('請填寫所有欄位');
+            return;
+        }
+
+        $.ajax({
+            url: 'addPageServlet', 
+            type: 'POST',
+            data: {
+                type: 'add_main_Confirm',
+                main_menu_id: menuID,
+                main_menu_name: menuName
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('Menu新增成功!');
+                    $('#addMenuModal').modal('hide'); 
+                } else {
+                    alert('Menu新增失敗: ' + response.message);
+                    
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+            }
+        });
+    });
+    
+    $(document).on('click', '[id^="actionButton"]', function() {
+        var pageId = $(this).data('page-id');
+        var currentStatus = $(this).data('current-status');
+        $.ajax({
+            url: 'addPageServlet',
+            type: 'POST',
+            data: {
+                type: 'page_status',
+                page_id: pageId,
+                status: currentStatus
+            },
+            dataType: 'json',
+            success: function(response) {
+                var status = response.status;
+                var message = response.message;
+                var newStatusText = currentStatus === 'y' ? '啟用中' : '停用中';
+                var newStatusColor = currentStatus === 'y' ? 'green' : 'red';
+                var newButtonText = currentStatus === 'y' ? '停用' : '啟用';
+                var newButtonClass = currentStatus === 'y' ? 'btn-danger' : 'btn-success';
+
+                if (status === "success") {
+                    var statusElement = $('#status' + pageId);
+                    statusElement.text(newStatusText);
+                    statusElement.css('color', newStatusColor);
+
+                    var button = $('#actionButton' + pageId);
+                    button.text(newButtonText);
+                    button.removeClass('btn-success btn-danger');
+                    button.addClass(newButtonClass);
+
+                    alert("操作成功: " + message);
+                    $('#searchButton').click();
+                } else {
+                    alert("操作失敗: " + message);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+                alert("操作失敗: " + textStatus);
+            }
+        });
+    });
+    $(document).on('click', '[id^="mainActionButton"]', function() {
+        var menuId = $(this).data('menu-id');
+        var currentStatus = $(this).data('current-status');
+        $.ajax({
+            url: 'addPageServlet',
+            type: 'POST',
+            data: {
+                type: 'main_menu_status',
+                menu_id: menuId,
+                status: currentStatus
+            },
+            dataType: 'json',
+            success: function(response) {
+                var status = response.status;
+                var message = response.message;
+                var newStatusText = currentStatus === 'y' ? '啟用中' : '停用中';
+                var newStatusColor = currentStatus === 'y' ? 'green' : 'red';
+                var newButtonText = currentStatus === 'y' ? '停用' : '啟用';
+                var newButtonClass = currentStatus === 'y' ? 'btn-danger' : 'btn-success';
+
+                if (status === "success") {
+                    var statusElement = $('#status' + menuId);
+                    statusElement.text(newStatusText);
+                    statusElement.css('color', newStatusColor);
+
+                    var button = $('#mainActionButton' + menuId);
+                    button.text(newButtonText);
+                    button.removeClass('btn-success btn-danger');
+                    button.addClass(newButtonClass);
+
+                    alert("操作成功: " + message);
+                    $('#mainMenuButton').click();
+                } else {
+                    alert("操作失敗: " + message);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+                alert("操作失敗: " + textStatus);
+            }
+        });
+    });
+
+});
+
+</script>
+</body>
+</html>

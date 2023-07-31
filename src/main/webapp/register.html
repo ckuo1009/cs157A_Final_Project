@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="BIG5">
+<title>Register</title>
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<!-- jQuery first -->
+<script src="js/jquery-3.3.1.js"></script>
+<!-- Popper.js for Bootstrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<!-- Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- Other JS -->
+
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+<style>
+/* 全域設置 */
+body {
+    background-color: #000;
+    font-family: 'Arial', sans-serif;
+}
+
+h2 {
+    color: #fff;
+    font-size: 3rem;
+}
+
+.form-custom-width {
+    max-width: 1000px; 
+    margin: auto;
+}
+
+.btn {
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+}
+
+/* 登入按鈕的顏色設置 */
+.btn.btn-color {
+    background-color: #007BFF;
+    border-color: #007BFF;
+    color: #fff;
+    
+}
+/* 字體大小 */
+.size{
+font-size: 24px;
+}
+
+</style>
+
+</head>
+
+<body style="display: none;">
+<div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="card my-5 p-5 bg-dark text-white">
+          <h2 class="text-center mb-4">SINBON</h2>
+          
+          <form class="form-custom-width">
+
+            <div class="input-custom-width mb-3">
+              <input type="text" class="form-control form-control-lg" id="Username" aria-describedby="emailHelp"
+                placeholder="@sinbon.com">
+            </div>
+            <div class="input-custom-width mb-3">
+              <input type="password" class="form-control form-control-lg" id="password" placeholder="Password">
+            </div>
+            <div class="input-custom-width text-center">
+              <button type="submit" class="btn btn-color btn-lg px-5 mb-5 w-100">Register</button>
+            </div>
+            <div id="emailHelp" class="form-text text-center mb-5 text-white">
+             <p class = "size">Already have an account?</p>
+             <br>
+              <a href="#" class="text-white fw-bold btn btn-color btn-sm login"> Log in</a>
+
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  <!-- Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="messageModalLabel">Message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modalMessage">
+        <!-- Message will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+
+<script>
+$(document).ready(function() {
+  $("body").fadeIn(800);
+
+  $('.login').on('click', function(event) {
+    event.preventDefault(); 
+    $('body').fadeOut(800, function() {
+      window.location.href = "login.html";
+    });
+  });
+
+  $('.form-custom-width').on('submit', function(event) {
+    event.preventDefault();
+    
+    var account = $('#Username').val();
+    var password = $('#password').val();
+
+    $.ajax({
+      url: 'registerServlet',
+      type: 'POST',
+      data: {
+        account: account,
+        password: password
+      },
+      success: function(data) {
+    	  var status = data.status;
+    	  var message = data.message;
+
+    	  $('#modalMessage').text(message);
+    	  $('#messageModal').modal('show');
+
+    	  if (status === 'success') {
+    	    // Show success message and redirect after 2 seconds
+    	    setTimeout(function(){
+    	      $("body").fadeOut(2000, function() {
+    	        window.location.href = "login.html";
+    	      });
+    	    }, 1500);
+    	  }
+    	},
+    	error: function(jqXHR, textStatus, errorThrown) {
+    	  $('#modalMessage').text('An error occurred... Look at the console (F12 or Ctrl+Shift+I, Console tab) for more information!');
+    	  $('#messageModal').modal('show');
+
+    	  console.log('jqXHR:', jqXHR);
+    	  console.log('textStatus:', textStatus);
+    	  console.log('errorThrown:', errorThrown);
+    	}
+
+    });
+  });
+});
+</script>
+
+</body>
+</html>
