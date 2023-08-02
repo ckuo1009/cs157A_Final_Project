@@ -139,6 +139,7 @@ public class manaServlet extends HttpServlet {
 			e.printStackTrace();
 		} finally {
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				b.close();
 			}
 			b = null;
@@ -179,6 +180,7 @@ public class manaServlet extends HttpServlet {
 			System.out.println("system error");
 		} finally {
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				b.close();
 			}
 			b = null;

@@ -39,12 +39,10 @@
         padding-top: 8px !important;
     }
     
-/* ... 你现有的 CSS ... */
 
-/* 添加这个样式来改变被选中行的背景色 */
 #myTable tbody tr.selected {
-    background-color: #000000; /* 你想要的颜色，这里是黑色 */
-    color: #ffffff; /* 可选的：改变文字颜色，这里是白色 */
+    background-color: #000000; 
+    color: #ffffff; 
 }
 .menu-label {
         font-size: larger;
@@ -72,8 +70,8 @@
         <thead>
             <tr>
                 <th>id</th>
-                <th>權限類型</th>
-                <th>操作</th>
+                <th>permission type</th>
+                <th>Operation</th>
             </tr>
         </thead>
         <tbody>
@@ -85,18 +83,18 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">                        
-                    <h4 class="modal-title">新增</h4>
+                    <h4 class="modal-title">add</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                <div class="modal-body">                    
     <form id="addForm">
         <div class="form-group">
-            <label>權限類型</label>
+            <label>Permission Type</label>
             <input type="text" name="permissionType" class="form-control" required>
         </div>
         <div class="form-group">
-            <label>選擇此權限類型需求頁面</label>
-             <label>選項</label>
+            <label>Select this permission type requirement page</label>
+             <label>options</label>
             <div id="menuContainer"></div>
         </div>
         <div class="form-group">
@@ -112,18 +110,18 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">                        
-                <h4 class="modal-title">修改</h4>
+                <h4 class="modal-title">Modification</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">                    
                 <form id="editForm">
                     <div class="form-group">
-                        <label>權限類型</label>
+                        <label>Permission Type</label>
                         <input type="text" name="permissionType" class="form-control" required disabled>
                     </div>
                     <div class="form-group">
-                        <label>選擇此權限類型需修改頁面</label>
-                        <label>選項</label>
+                        <label>Select this permission type requirement page</label>
+                        <label>options</label>
                         <div id="editMenuContainer"></div> <!-- changed to unique id -->
                     </div>
                     <div class="form-group">
@@ -207,7 +205,7 @@ $(document).ready(function(){
         	            data: null,
         	            render: function ( data, type, row ) {
         	                if(row[0] == "0"){
-        	                    return "";  // no button for id "0"
+        	                    return "";  // no button for id "0", manager gruop
         	                } else {
         	                    return '<button class="btn btn-warning btn-sm">Edit</button> <button class="btn btn-danger btn-sm">Delete</button>';
         	                }
@@ -232,7 +230,7 @@ $(document).ready(function(){
                 }
             });
         } else {
-            table.ajax.reload(null, false); // 保持分页、搜索等状态
+            table.ajax.reload(null, false); 
         }
     });
 
@@ -254,7 +252,6 @@ $(document).ready(function(){
 
       
         
-        // 從伺服器取得主菜單和子菜單的資料
         $.ajax({
             url: 'pageManaServlet',
             type: 'POST',
@@ -282,7 +279,7 @@ $(document).ready(function(){
                     });
                 });
 
-                // 主菜單的選擇框被點擊時啟用或禁用相應的子菜單選擇框
+
                 $('input[data-main-menu-id]').prop('disabled', true);
                 $('input[id^="mainMenu"]').click(function() {
                     var isChecked = $(this).is(':checked');
@@ -299,8 +296,8 @@ $(document).ready(function(){
         
         var permissionType = $('input[name="permissionType"]').val();
         if (!permissionType) {
-            // 如果没有输入权限类型，显示模态框并提示用户
-            $('#alertMessage').text('你尚未輸入');
+       
+            $('#alertMessage').text('You have not entered yet');
             $('#alertModal').modal('show');
             return;
         }
@@ -333,13 +330,13 @@ $(document).ready(function(){
                 $('#addModal').modal('hide');
                
                 if (response.status === 'success') {
-                    $('#statusMessage').text('新增成功！');
-                    // 显示模态框，并使用服务器返回的消息更新模态框的文本
+                    $('#statusMessage').text('success！');
+          
                     $('#alertMessage').text(response.message);
                     $('#alertModal').modal('show');
                 } else {
-                    $('#statusMessage').text('添加失败：' + response.message);
-                    // 显示模态框，并使用服务器返回的消息更新模态框的文本
+                    $('#statusMessage').text('fail：' + response.message);
+              
                     $('#alertMessage').text(response.message);
                     $('#alertModal').modal('show');
                 }
@@ -389,7 +386,7 @@ $(document).ready(function(){
         $('#addForm')[0].reset();
         $('#editModal').modal('show');
 
-        // 從伺服器取得主菜單和子菜單的資料，以及选定行的相关数据
+        
       
     });
  
@@ -528,7 +525,7 @@ $(document).ready(function(){
 
         // Check if user has selected at least one menu
         if (selectedMainMenu.length === 0 && selectedSubMenu.length === 0) {
-            $('#alertMessage').text('請至少選擇一個選項');
+            $('#alertMessage').text('please select at least one option');
             $('#alertModal').modal('show');
             return;
         }
@@ -549,12 +546,12 @@ $(document).ready(function(){
                 $('#editModal').modal('hide');
 
                 if (response.status === 'success') {
-                    $('#statusMessage').text('修改成功！');
-                    // 显示模态框，并使用服务器返回的消息更新模态框的文本
+                    $('#statusMessage').text('Modification successful！');
+                    
                     $('#alertMessage').text(response.message);
                     $('#alertModal').modal('show');
                 } else {
-                    $('#statusMessage').text('修改失败：' + response.message);
+                    $('#statusMessage').text('Modification failed：' + response.message);
                     // 显示模态框，并使用服务器返回的消息更新模态框的文本
                     $('#alertMessage').text(response.message);
                     $('#alertModal').modal('show');

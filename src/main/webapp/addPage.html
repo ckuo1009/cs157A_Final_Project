@@ -31,10 +31,10 @@
 <body>
      <div class="container mt-5">
        <div class="d-flex justify-content-center">
-    <button id="searchButton" class="btn btn-success btn-sm mr-2">頁面搜尋</button>
-    <button id="mainMenuButton" class="btn btn-success btn-sm mr-5">Main Menu 搜尋</button>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPageModal"> 新增頁面</button>
-    <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#addMenuModal">新增 Menu </button>
+    <button id="searchButton" class="btn btn-success btn-sm mr-2">pages search</button>
+    <button id="mainMenuButton" class="btn btn-success btn-sm mr-5">Main Menu search</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPageModal"> add new page</button>
+    <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#addMenuModal">add new Menu </button>
 </div>
         <table id="dataTable" class="display mt-3">
             <thead>
@@ -53,22 +53,22 @@
     </div>
     
     
-    <!--新增頁面 Modal -->
+    <!--page Modal -->
 <div class="modal fade" id="addPageModal" tabindex="-1" aria-labelledby="addPageModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addPageModalLabel">新增頁面</h5>
+        <h5 class="modal-title" id="addPageModalLabel">add new page</h5>
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="addPageForm">
           <div class="form-group">
-            <label for="pageName">Page Name (顯示名稱)</label>
+            <label for="pageName">Page Name </label>
             <input type="text" class="form-control" id="pageName" required>
           </div>
           <div class="form-group">
-            <label for="pageHTML">Page HTML (.html結尾)</label>
+            <label for="pageHTML">Page HTML (for example:1234.html)</label>
             <input type="text" class="form-control" id="pageHTML" required pattern=".*\.html$">
           </div>
           <div class="form-group">
@@ -82,8 +82,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-        <button type="submit" class="btn btn-primary" form="addPageForm">儲存</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
+        <button type="submit" class="btn btn-primary" form="addPageForm">save</button>
       </div>
     </div>
   </div>
@@ -92,12 +92,12 @@
 			
 
 
-<!-- 新增 Menu Modal -->
+<!--  Menu Modal -->
 <div class="modal fade" id="addMenuModal" tabindex="-1" aria-labelledby="addMenuModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addMenuModalLabel">新增 Menu</h5>
+        <h5 class="modal-title" id="addMenuModalLabel">add Menu</h5>
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -113,8 +113,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-        <button type="submit" class="btn btn-primary" form="addMenuForm">儲存</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
+        <button type="submit" class="btn btn-primary" form="addMenuForm">save</button>
       </div>
     </div>
   </div>
@@ -154,8 +154,8 @@ $(document).ready(function() {
                 $.each(pageData, function(i, page) {
                     var status = page[5]; // Assuming the status is at index 5 in the page data
                     var statusColor = status === 'y' ? 'green' : 'red';
-                    var statusText = status === 'y' ? '啟用中' : '停用中';
-                    var buttonText = status === 'y' ? '停用' : '啟用';
+                    var statusText = status === 'y' ? 'Activating' : 'Deactivating';
+                    var buttonText = status === 'y' ? 'Deactivate' : 'Activate';
                     var buttonColor = status === 'y' ? 'btn-danger' : 'btn-success';
 
                     var actionButtons = `<button class="btn ${buttonColor}" id="actionButton${page[2]}" data-page-id="${page[2]}" data-current-status="${status}">${buttonText}</button>`;
@@ -205,8 +205,8 @@ $(document).ready(function() {
                     console.log(main); // Check if data is coming in
                     var status = main[2];
                     var statusColor = status === 'y' ? 'green' : 'red';
-                    var statusText = status === 'y' ? '啟用中' : '停用中';
-                    var buttonText = status === 'y' ? '停用' : '啟用';
+                    var statusText = status === 'y' ? 'Activating' : 'Deactivating';
+                    var buttonText = status === 'y' ? 'Deactivate' : 'Activate';
                     var buttonColor = status === 'y' ? 'btn-danger' : 'btn-success';
 
                     var actionButtons = `<button class="btn ${buttonColor}" id="mainActionButton${main[1]}" data-menu-id="${main[1]}" data-current-status="${status}">${buttonText}</button>`;
@@ -251,7 +251,7 @@ $(document).ready(function() {
         });
     });
     
-	// 新增頁面 提交
+
     $('#addPageForm').on('submit', function(e) {
     	 e.preventDefault();
 
@@ -278,16 +278,16 @@ $(document).ready(function() {
 
                  if (status == "success") {
                      // display message and close modal
-                     alert("新增頁面成功: " + message);
+                     alert("insertion success: " + message);
                      $('#addPageModal').modal('hide');
                  } else {
                      // display error message
-                     alert("新增頁面失敗: " + message);
+                     alert("insertion fail: " + message);
                  }
              },
              error: function(jqXHR, textStatus, errorThrown) {
                  console.error(textStatus, errorThrown);
-                 alert("新增頁面失敗: " + textStatus);
+                 alert("insertion fail: " + textStatus);
              }
          });
      
@@ -298,9 +298,9 @@ $(document).ready(function() {
         var menuName = $('#menuName').val().trim();
         var menuID = $('#menuID').val().trim();
 
-        // 防止空白输入
+      
         if (!menuName || !menuID) {
-            alert('請填寫所有欄位');
+            alert('Please fill in all fields');
             return;
         }
 
@@ -315,10 +315,10 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                    alert('Menu新增成功!');
+                    alert('insertion successful!');
                     $('#addMenuModal').modal('hide'); 
                 } else {
-                    alert('Menu新增失敗: ' + response.message);
+                    alert('insertion fail: ' + response.message);
                     
                 }
             },
@@ -343,9 +343,9 @@ $(document).ready(function() {
             success: function(response) {
                 var status = response.status;
                 var message = response.message;
-                var newStatusText = currentStatus === 'y' ? '啟用中' : '停用中';
+                var newStatusText = currentStatus === 'y' ? 'Activating' : 'Deactivating';
                 var newStatusColor = currentStatus === 'y' ? 'green' : 'red';
-                var newButtonText = currentStatus === 'y' ? '停用' : '啟用';
+                var newButtonText = currentStatus === 'y' ? 'Deactivate' : 'Activate';
                 var newButtonClass = currentStatus === 'y' ? 'btn-danger' : 'btn-success';
 
                 if (status === "success") {
@@ -358,15 +358,15 @@ $(document).ready(function() {
                     button.removeClass('btn-success btn-danger');
                     button.addClass(newButtonClass);
 
-                    alert("操作成功: " + message);
+                    alert("success: " + message);
                     $('#searchButton').click();
                 } else {
-                    alert("操作失敗: " + message);
+                    alert("fail: " + message);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);
-                alert("操作失敗: " + textStatus);
+                alert("fail: " + textStatus);
             }
         });
     });
@@ -385,9 +385,9 @@ $(document).ready(function() {
             success: function(response) {
                 var status = response.status;
                 var message = response.message;
-                var newStatusText = currentStatus === 'y' ? '啟用中' : '停用中';
+                var newStatusText = currentStatus === 'y' ? 'Activating' : 'Deactivating';
                 var newStatusColor = currentStatus === 'y' ? 'green' : 'red';
-                var newButtonText = currentStatus === 'y' ? '停用' : '啟用';
+                var newButtonText = currentStatus === 'y' ? 'Deactivate' : 'Activate';
                 var newButtonClass = currentStatus === 'y' ? 'btn-danger' : 'btn-success';
 
                 if (status === "success") {
@@ -400,15 +400,15 @@ $(document).ready(function() {
                     button.removeClass('btn-success btn-danger');
                     button.addClass(newButtonClass);
 
-                    alert("操作成功: " + message);
+                    alert("success: " + message);
                     $('#mainMenuButton').click();
                 } else {
-                    alert("操作失敗: " + message);
+                    alert("fail: " + message);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);
-                alert("操作失敗: " + textStatus);
+                alert("fail: " + textStatus);
             }
         });
     });

@@ -459,22 +459,22 @@ h1, .h1 {
     }
 }
 .dashboard-content {
-    position: relative;   /* 讓 iframe 可以相對於此元素進行絕對定位 */
+    position: relative;   /*  iframe  */
 }
 
 .dashboard-content .container {
 
-    position: absolute;  /* 讓 iframe 可以相對於此元素進行絕對定位 */
+    position: absolute;  /*  iframe */
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    overflow: auto;  /* 如果 iframe 內容超過其大小，則會出現滾動條 */
+    overflow: auto;  /*  iframe */
 }
 
 .container iframe {
-    width: 100%;   /* 將 iframe 的寬度設定為其父元素的寬度 */
-    height: 100%;  /* 將 iframe 的高度設定為其父元素的高度 */
+    width: 100%;   
+    height: 100%;  
 }
 iframe.no-border {
     border: none;
@@ -490,7 +490,7 @@ iframe.no-border {
         <div class="dashboard-nav">
             <header>
                 <a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a>
-                <a href="#" class="brand-logo"><i class="fas fa-anchor"></i> <span>SINBON</span></a>
+                <a href="#" class="brand-logo"><i class="fas fa-anchor"></i> <span>SJSU</span></a>
             </header>
             <nav class="dashboard-nav-list">
                 
@@ -500,13 +500,11 @@ iframe.no-border {
                 
                 
                 <div class='dashboard-nav-dropdown'>
-                    <a href="#!" id="users" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i class="fa-regular fa-user"></i> 用戶 </a>
+                    <a href="#!" id="users" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i class="fa-regular fa-user"></i> user </a>
                     <div class='dashboard-nav-dropdown-menu'>
                         
-                        <a href="logintest.html" id="logintest" class="dashboard-nav-dropdown-item">測試1</a>
-                        <a href="logintest.html" id="2" class="dashboard-nav-dropdown-item">測試2</a>
-                        <a href="logintest.html" id="3" class="dashboard-nav-dropdown-item">測試3</a>
-                        <a href="logintest.html" id="4"class="dashboard-nav-dropdown-item">測試4</a>
+                        <a href="logintest.html" id="logintest" class="dashboard-nav-dropdown-item">test1</a>
+                   
                     </div>
                 </div>
                 
@@ -516,10 +514,10 @@ iframe.no-border {
                 </div>
                 
                  <div class='dashboard-nav-dropdown'>
-                    <a href="#!" id="0724test" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i class="fa-regular fa-user"></i> 0724測試 </a>
+                    <a href="#!" id="0724test" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i class="fa-regular fa-user"></i> 0724testing </a>
                      <div class='dashboard-nav-dropdown-menu'>
                         
-                        <a href="dog.html" id="dog" class="dashboard-nav-dropdown-item">0724測試子頁面</a>
+              
                         
                         
                     </div>
@@ -528,12 +526,12 @@ iframe.no-border {
                
 
 <div id="admin-section" class='dashboard-nav-dropdown admin-section'>
-    <a href="#!"  id="admin-page"  class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i class="fa-solid fa-people-roof"></i> 管理者頁面 </a>
+    <a href="#!"  id="admin-page"  class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i class="fa-solid fa-people-roof"></i> Administrator </a>
     <div class='dashboard-nav-dropdown-menu'>
-        <a href="userMana.html" id="userMana" class="dashboard-nav-dropdown-item">用戶管理</a>
-        <a href="pageMana.html" id="pageAccess" class="dashboard-nav-dropdown-item">頁面權限設定</a>
-        <a href="addPage.html" id="addPage" class="dashboard-nav-dropdown-item">新增刪除頁面</a>
-        <a href="home.html" id="test" class="dashboard-nav-dropdown-item">測試</a>
+        <a href="userMana.html" id="userMana" class="dashboard-nav-dropdown-item">User Management</a>
+        <a href="pageMana.html" id="pageAccess" class="dashboard-nav-dropdown-item">Permission Type Page Setting</a>
+        <a href="addPage.html" id="addPage" class="dashboard-nav-dropdown-item">menu page management</a>
+       
         
     </div>
 </div>

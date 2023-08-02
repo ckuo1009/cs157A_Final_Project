@@ -305,6 +305,7 @@ public class pageManaServlet extends HttpServlet {
 			e.printStackTrace();
 		} finally {
 	    	if (b != null) {
+	    		b.setAutoCommitMode(false);
 				try {
 					b.close();
 				} catch (Exception e) {
@@ -341,6 +342,7 @@ public class pageManaServlet extends HttpServlet {
 				e.printStackTrace();
 			}finally {
 		    	if (b != null) {
+		    		b.setAutoCommitMode(false);
 					try {
 						b.close();
 					} catch (Exception e) {
@@ -403,6 +405,7 @@ public class pageManaServlet extends HttpServlet {
 	        e.printStackTrace();
 	    }finally {
 	    	if (b != null) {
+	    		b.setAutoCommitMode(false);
 				try {
 					b.close();
 				} catch (Exception e) {
@@ -453,6 +456,7 @@ public class pageManaServlet extends HttpServlet {
 			e.printStackTrace();
 		}finally {
 	        if (b != null) {
+	        	b.setAutoCommitMode(false);
 	            try {
 	                b.close();
 	            } catch (Exception e) {
@@ -493,6 +497,7 @@ public class pageManaServlet extends HttpServlet {
 				e.printStackTrace();
 			}finally {
 		    	if (b != null) {
+		    		b.setAutoCommitMode(false);
 					try {
 						b.close();
 					} catch (Exception e) {
@@ -525,6 +530,7 @@ public class pageManaServlet extends HttpServlet {
 	        e.printStackTrace();
 	    } finally {
 	        if (b != null) {
+	        	b.setAutoCommitMode(false);
 	            try {
 	                b.close();
 	            } catch (Exception e) {
@@ -639,6 +645,7 @@ public class pageManaServlet extends HttpServlet {
 				e.printStackTrace();
 			}finally {
 				if (b != null) {
+					b.setAutoCommitMode(false);
 					try {
 						b.close();
 					} catch (Exception e) {
@@ -726,6 +733,7 @@ public class pageManaServlet extends HttpServlet {
 			}
 		    finally {
 		    	if (b != null) {
+		    		b.setAutoCommitMode(false);
 					try {
 						b.close();
 					} catch (Exception e) {
@@ -853,6 +861,7 @@ public class pageManaServlet extends HttpServlet {
 	        e.printStackTrace();
 	    }finally {
 	    	if (b != null) {
+	    		b.setAutoCommitMode(false);
 				try {
 					b.close();
 				} catch (Exception e) {
@@ -899,6 +908,7 @@ public class pageManaServlet extends HttpServlet {
 			e.printStackTrace();
 		}finally {
 	    	if (b != null) {
+	    		b.setAutoCommitMode(false);
 				try {
 					b.close();
 				} catch (Exception e) {

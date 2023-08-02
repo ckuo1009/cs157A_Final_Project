@@ -47,7 +47,7 @@ public class GroupServlet extends HttpServlet {
 		a = b.querySQL(sql);
 
 		for (ArrayList<Object> innerList : a) {
-			group.add((String) innerList.get(0)); // 將內部列表的第一個元素加入到group中
+			group.add((String) innerList.get(0)); 
 		}
 		for (ArrayList<Object> innerList : a) {
 
@@ -64,6 +64,7 @@ public class GroupServlet extends HttpServlet {
 			e.printStackTrace();
 		} finally {
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				b.close();
 			}
 			b = null;

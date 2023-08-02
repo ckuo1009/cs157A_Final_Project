@@ -121,7 +121,7 @@ public class registerServlet extends HttpServlet {
 		if (account == null) {
 			return false;
 		}
-		return account.endsWith("@sinbon.com");
+		return account.endsWith("@sjsu.edu");
 	}
 	/**
 	 * check if the size of  password >=6
@@ -191,6 +191,7 @@ public class registerServlet extends HttpServlet {
 	 throw new RuntimeException("Error checking if account exists or inserting account", e);
 	 } finally {
 		 if(b!=null) {
+			 b.setAutoCommitMode(false);
 			 b.close();
 			 b=null;
 		 }

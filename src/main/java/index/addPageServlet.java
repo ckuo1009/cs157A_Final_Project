@@ -294,7 +294,9 @@ Vector<String> vtrParams = new Vector<>();
 		} finally {
 			if (b != null) {
 				try {
+					b.setAutoCommitMode(false);
 					b.close();
+					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -362,6 +364,7 @@ Vector<String> vtrParams = new Vector<>();
 		} finally {
 			if (b != null) {
 				try {
+					b.setAutoCommitMode(false);
 					b.close();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -387,9 +390,9 @@ Vector<String> vtrParams = new Vector<>();
 	private JSONArray convertToJSONArray(ArrayList<ArrayList<Object>> data) {
 		JSONArray jsonArray = new JSONArray();
 
-		// 遍歷外層 ArrayList
+		
 		for (ArrayList<Object> innerList : data) {
-			// 遍歷內層 ArrayList
+		
 			for (Object obj : innerList) {
 				jsonArray.put(obj);
 			}
@@ -413,12 +416,14 @@ Vector<String> vtrParams = new Vector<>();
 
 		try {
 			b = new QueryBean("qb", false, "utf-8", "utf-8");
+			
 			a = b.querySQL(sql);
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		} finally {
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				try {
 					b.close();
 				} catch (Exception e) {
@@ -456,6 +461,7 @@ Vector<String> vtrParams = new Vector<>();
 			e.printStackTrace();
 		} finally {
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				try {
 					b.close();
 				} catch (Exception e) {
@@ -492,6 +498,7 @@ Vector<String> vtrParams = new Vector<>();
 			e.printStackTrace();
 		} finally {
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				try {
 					b.close();
 				} catch (Exception e) {
@@ -544,6 +551,7 @@ Vector<String> vtrParams = new Vector<>();
 			e.printStackTrace();
 		} finally {
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				try {
 					b.close();
 				} catch (Exception e) {
@@ -611,6 +619,7 @@ Vector<String> vtrParams = new Vector<>();
 		} finally {
 
 			if (b != null) {
+				b.setAutoCommitMode(false);
 				try {
 					b.close();
 				} catch (Exception e) {
