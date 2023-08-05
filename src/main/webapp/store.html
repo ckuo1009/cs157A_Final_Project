@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add or Search Product</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; 
+            padding: 20px;
+        }
+
+        .input-field {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px; 
+        }
+
+        .button {
+            padding: 10px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="name">Product Name:</label>
+        <input type="text" id="name" name="name" class="input-field">
+        <button class="button" onclick="searchProduct()">Search</button>
+        <button class="button" onclick="addProduct()">Add</button>
+    </div>
+    <script>
+        function addProduct() {
+            const name = document.getElementById("name").value;
+            console.log(`Added Product: ${name}`);
+        }
+
+        function searchProduct() {
+            const name = document.getElementById("name").value;
+            console.log(`Searched Product: ${name}`);
+        }
+    </script>
+</body>
+</html>
