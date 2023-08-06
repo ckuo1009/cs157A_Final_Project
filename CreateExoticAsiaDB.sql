@@ -15,6 +15,9 @@ CREATE TABLE levelinfo (
     level_name enum('Manager', 'Customer', 'VIP Customer') NOT NULL
 );
 
+INSERT INTO levelinfo
+values (1, 'Manager'), (2, 'Customer'), (3, 'VIP Customer');
+
 CREATE TABLE menu_access (
     access_level int not null ,
     id varchar(255) not null ,
@@ -69,6 +72,9 @@ create table productCategory (
     id int primary key ,
     category enum('Fruit', 'Vegetable', 'Condiment', 'Spice', 'Frozen', 'Snacks', 'Other')
 );
+
+INSERT INTO productCategory
+values (1, 'Fruit'), (2, 'Vegetable'), (3, 'Condiment'), (4, 'Spice'), (6, 'Frozen'), (7, 'Snacks'), (8, 'Other');
 
 create table products (
     id int primary key ,
