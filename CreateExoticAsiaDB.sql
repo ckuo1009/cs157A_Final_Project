@@ -58,6 +58,13 @@ create table user (
     foreign key (account) references account(account)
     );
 
+create table VIPCustomer (
+    uid int primary key ,
+    occupation varchar(255) not null ,
+    creditScore decimal(6, 2) not null ,
+    foreign key (uid) references user(id)
+);
+
 create table store (
     id int primary key ,
     uid int not null ,
