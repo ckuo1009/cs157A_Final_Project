@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS157A Project</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .search-input {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .search-button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .sort-container {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+        }
+
+        .sort-label {
+            margin-right: 10px;
+        }
+
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .product {
+            flex: 0 0 calc(25% - 20px);
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-bar">
+        <input type="text" class="search-input" placeholder="Search items">
+        <button class="search-button" onclick="searchProduct()">Search</button>
+    </div>
+    <script>
+    		function searchProduct() {
+            const name = document.getElementById("name").value;
+            console.log(`Searched Product: ${name}`);
+        }  
+    </script>
+</body>
+</html>

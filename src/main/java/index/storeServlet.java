@@ -439,6 +439,7 @@ public class storeServlet extends HttpServlet {
 				jsonArray.put(innerJsonArray);
 			}
 
+			
 			status = "success";
 			jsonObject.put("status", status);
 			jsonObject.put(name, jsonArray);

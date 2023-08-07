@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="order.css" />
+    <title>CS157A Project</title>
+</head>
+<body>
+    <div class="header">Store order history</div>
+    <div class="search-bar">
+        <input type="text" id="name" class="search-input" placeholder="Search items">
+        <button class="search-button" onclick="searchProduct()">Search</button>
+    </div>
+    <script>
+    		function searchProduct() {
+            const name = document.getElementById("name").value;
+            console.log(`Searched Product: ${name}`);
+        }  
+    </script>
+</body>
+</html>
