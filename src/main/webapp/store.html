@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add or Search Product</title>
+     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    
+     <!-- jQuery first -->
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <!-- Popper.js for Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- jQuery UI JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; 
+            padding: 20px;
+        }
+
+        .input-field {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px; 
+        }
+
+        .button {
+            padding: 10px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="name">Product Name:</label>
+        <input type="text" id="name" name="name" class="input-field">
+        <button class="button" onclick="searchProduct()">Search</button>
+        <button class="button" onclick="addProduct()">Add</button>
+        
+        
+        
+    </div>
+    
+    <table id="productTable" class="display" style="display: none;">
+    <thead>
+        <tr>
+        	<th>Store_name</th>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>type</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+		<!-- add Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="productForm">
+          <div class="form-group">
+            <label for="product_name">Product Name</label>
+            <input type="text" class="form-control" id="product_name" name="product_name">
+          </div>
+          <div class="form-group">
+            <label for="type">Type</label>
+            <input type="text" class="form-control" id="type" name="type">
+          </div>
+          <div class="form-group">
+            <label for="price">Price</label>
+            <input type="text" class="form-control" id="price" name="price">
+          </div>
+          <div class="form-group">
+            <label for="stock">Stock</label>
+            <input type="text" class="form-control" id="stock" name="stock">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="submitProduct()">Add Product</button>
+      </div>
+    </div>
+  </div>
+</div>
+				<!-- edit Modal -->
+	<div id="editProductModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Product</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="edit_pid">Product ID</label>
+                        <input type="text" class="form-control" id="edit_pid" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_product_name">Product Name</label>
+                        <input type="text" class="form-control" id="edit_product_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_type">Type</label>
+                        <input type="text" class="form-control" id="edit_type">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_price">Price</label>
+                        <input type="text" class="form-control" id="edit_price">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_stock">Stock</label>
+                        <input type="text" class="form-control" id="edit_stock">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="updateProduct" type="button" class="btn btn-primary">Update</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+			
+    <script>
+    $(document).ready(function() {
+        let table = $('#productTable').DataTable();
+
+        table.on('click', '.edit-btn', function() {
+            let data = table.row($(this).parents('tr')).data();
+            let pid = data[1]; // Get product ID
+            let product_name = data[2]; // Get product name
+            let product_type = data[3]; // Get type
+            let price = data[4]; // Get price
+            let stock = data[5]; // Get stock
+
+            $("#edit_pid").val(pid);
+            $("#edit_product_name").val(product_name);
+            $("#edit_type").val(product_type); 
+            $("#edit_price").val(price);
+            $("#edit_stock").val(stock);
+
+            $("#editProductModal").modal('show');
+        });
+
+        $("#updateProduct").click(function() {
+            let pid = $("#edit_pid").val();
+            let product_name = $("#edit_product_name").val();
+            let product_type = $("#edit_type").val(); 
+            let price = $("#edit_price").val();
+            let stock = $("#edit_stock").val();
+
+            $.ajax({
+                url: 'storeServlet',
+                type: 'POST',
+                data: {
+                    type: 'edit',
+                    pid: pid,
+                    product_name: product_name,
+                    product_type: product_type, 
+                    price: price,
+                    stock: stock
+                },
+                success: function(response) {
+                    if(response.status === "success") {
+                        alert(response.message);
+                        $("#editProductModal").modal('hide'); 
+                        searchProduct(); // Refresh the table
+                    } else {
+                        alert(response.message); // Display error message from server
+                    }
+                },
+                error: function(error) {
+                    console.error(error);
+                    alert("Error");
+                }
+            });
+        });
+        table.on('click', '.delete-btn', function() {
+            let data = table.row($(this).parents('tr')).data();
+            let product_id = data[1]; // Get product ID
+
+            $.ajax({
+                url: 'storeServlet',
+                type: 'POST',
+                data: {
+                    type: 'deletion',
+                    pid: product_id
+                },
+                success: function(response) {
+                    if (response.status === "success") {
+                        alert(response.message);
+                        // Refresh the table
+                        searchProduct();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(error) {
+                    console.error(error);
+                    alert("Error");
+                }
+            });
+          
+
+
+    });
+        
+       
+    });
+    function addProduct() {
+        $("#addProductModal").modal('show');
+    }
+
+    function submitProduct() {
+        const product_name = $("#product_name").val();
+        const product_type = $("#type").val();
+        const price = $("#price").val();
+        const stock = $("#stock").val();
+
+        $.ajax({
+            url: 'storeServlet',
+            type: 'POST',
+            data: {
+                type: 'add',
+                product_name: product_name,
+                product_type: product_type,
+                price: price,
+                stock: stock
+            },
+            success: function(response) {
+            	console.log(response); 
+                if(response.status === "success") {
+                    alert(response.message);
+                   
+                    $("#addProductModal").modal('hide');
+                  
+                    searchProduct();
+                } else if(response.status === "fail") {
+                    alert(response.message);
+                }
+            },
+            error: function(error) {
+                console.error(error);
+                alert("Error");
+            }
+        });
+    }
+
+
+
+   
+    function searchProduct() {
+        const productName = $("#name").val();  
+
+        $.ajax({
+            url: 'storeServlet',
+            type: 'POST',
+            data: {
+                type: 'search',
+                keyword: productName
+            },
+            success: function(response) {
+                const status = response.status;
+                if (status === "success") {
+                    const data = response.store_data;
+                    let dataSet = data.map(product => [
+                        product[0],  // Store_name
+                        product[1],  // Product ID
+                        product[2],  // Product Name
+                        product[3],  // Type
+                        product[4],  // Price
+                        product[5],  // Stock
+                        '<button class="edit-btn" style="background-color: yellow;">Edit</button>' + 
+                        '<button class="delete-btn" style="background-color: red; margin-left: 5px;">Delete</button>'
+                    ]);
+
+                    let table = $('#productTable').DataTable();
+                    table.clear();
+                    table.rows.add(dataSet).draw();
+                    $('#productTable').show();
+                } else if (status === "fail") {
+                    alert("Searching result is empty.");
+                } else {
+                    alert("error！");
+                }
+            },
+            error: function(error) {
+                console.error(error);
+                alert("error");
+            }
+        });
+    }
+
+
+
+    
+    </script>
+</body>
+</html>

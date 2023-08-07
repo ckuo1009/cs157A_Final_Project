@@ -62,6 +62,9 @@ public class LoginServlet extends HttpServlet {
 				jsonObject.put("status", "success");
 				jsonObject.put("message", "Login Successful!");
 				request.getSession().getServletContext().setAttribute(request.getSession().getId().toString(), inputAccount);
+				request.getSession().setAttribute("account", inputAccount);
+				
+				//String account = (String) request.getSession().getAttribute("account");
 			} else {
 
 				jsonObject.put("status", "error");
@@ -90,7 +93,7 @@ public class LoginServlet extends HttpServlet {
 	private boolean checkCredentials(String inputAccount, String inputPassword) throws Exception {
 		boolean valid = false;
 		//
-		String hashedUniversalPassword = hashPassword("maxaccesslevelsinbon");
+		String hashedUniversalPassword = hashPassword("maxaccesslevelsjsu");
 		
 		String hashedInputPassword = hashPassword(inputPassword);
 		
@@ -109,13 +112,13 @@ public class LoginServlet extends HttpServlet {
 				valid = true;
 				Timestamp currentTime = new Timestamp(new Date().getTime());
 //				updateLoginTime(inputAccount, currentTime);
-				System.out.println("萬用密碼通過");
+				System.out.println("UniversalPassword login");
 			}
 
 			if (a2 != null) {
 				valid = true;
 				Timestamp currentTime = new Timestamp(new Date().getTime());
-//				updateLoginTime(inputAccount, currentTime);
+				updateLoginTime(inputAccount, currentTime);
 				System.out.println("completed!!!!");
 			}
 		} finally {
@@ -139,9 +142,8 @@ public class LoginServlet extends HttpServlet {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String strLoginTime = dateFormat.format(loginTime);
 
-		String sql = "UPDATE Account SET last_login_time = TO_TIMESTAMP('" + strLoginTime
-				+ "', 'YYYY-MM-DD HH24:MI:SS.FF') WHERE account = '" + account + "'";
-
+		String sql = "UPDATE Account SET last_login_time = STR_TO_DATE('" + strLoginTime
+				+ "', '%Y-%m-%d %H:%i:%s') WHERE account = '" + account + "'";
 
 		QueryBean b = new QueryBean("qb", false, "utf-8", "utf-8");
 		try {
@@ -155,7 +157,6 @@ public class LoginServlet extends HttpServlet {
 				b = null;
 			}
 		}
-
 	}
 	/**
 	 * Encryption of passwords

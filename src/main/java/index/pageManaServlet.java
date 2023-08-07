@@ -118,6 +118,7 @@ public class pageManaServlet extends HttpServlet {
 	        List<String> selectedMainMenu = null;
 	        List<String> selectedSubMenu = null;
 	        String status = "";
+	        String id="";
 
 	        if(request.getParameter("selectedMainMenu") != null) {
 	            selectedMainMenu = parseJsonArray(request.getParameter("selectedMainMenu"));
@@ -127,7 +128,7 @@ public class pageManaServlet extends HttpServlet {
 	            selectedSubMenu = parseJsonArray(request.getParameter("selectedSubMenu"));
 	        }
 	        
-	        Result r = insertData(permissionType, selectedMainMenu, selectedSubMenu);
+	        Result r = insertData(permissionType, selectedMainMenu, selectedSubMenu,0,id);
 	        
 	        
 	        if(r.isSuccess) {
@@ -273,6 +274,7 @@ public class pageManaServlet extends HttpServlet {
 	    
 	    try {
 			b = new QueryBean("qb", false, "utf-8", "utf-8");
+			
 			a=b.querySQL(idSql);
 			id=(String) a.get(0).get(0);
 			
@@ -282,7 +284,7 @@ public class pageManaServlet extends HttpServlet {
 			if(isSuccess) {
 			    
 			    
-			        r = insertData(permissionType, selectedMainMenu, selectedSubMenu);
+			        r = insertData(permissionType, selectedMainMenu, selectedSubMenu,1,id);
 			        System.out.println("r " +r.getMessage());
 			    
 
@@ -377,15 +379,17 @@ public class pageManaServlet extends HttpServlet {
 	            sublist.add("empty");
 	            selectedMenu.add(sublist);
 	        }
-	        // 對每個主菜單項目進行遍歷
+	       
 	        for (ArrayList<Object> mainRow : selectedMenu) {
-	            String mainMenuItem = (String) mainRow.get(0);  // 取得主菜單項目
+	            String mainMenuItem = (String) mainRow.get(0);  
 
-	            // 找到對應的子菜單項目
-	            String subPageSql = "select page_name from page where prev_name = '" + mainMenuItem + "'";
+	         
+	            String subPageSql = "select page_name from page,access_level \r\n"
+	            		+ " where page.page_html=access_level.page_html and \r\n"
+	            		+ " prev_name = '"+mainMenuItem+"' and access_level.access_level= "+id;
 	            ArrayList<ArrayList<Object>> subPageAl = b.querySQL(subPageSql);
 	            
-	            // 檢查subPageAl是否為null或空
+	            
 	            if (subPageAl != null && !subPageAl.isEmpty()) {
 	              
 	                for (ArrayList<Object> subRow : subPageAl) {
@@ -445,7 +449,7 @@ public class pageManaServlet extends HttpServlet {
 			
 			String a = b.executeSQL(deletion);
 			
-			System.out.println("執行結果: "+a);
+			System.out.println("result: "+a);
 			
 			if(a.equals("")) {
 				isSuccess=true;
@@ -552,10 +556,17 @@ public class pageManaServlet extends HttpServlet {
 	 * @param selectedSubMenu
 	 * @return
 	 */
-	private Result insertData (String permissionType,List<String> selectedMainMenu,List<String> selectedSubMenu) {
+	private Result insertData (String permissionType,List<String> selectedMainMenu,List<String> selectedSubMenu,int i,String id) {
+		Result r = new Result();
 		
+		if(i==0) {
+			 r = insertDataHelper(permissionType);
+		}else {
+			// call helper method
+			 r = editinsertDataHelper(permissionType,id);
+		}
 		// call helper method
-		Result r = insertDataHelper(permissionType);
+		
 	
 		boolean isSuccess=false;
 		String message="";
@@ -663,6 +674,83 @@ public class pageManaServlet extends HttpServlet {
 		
 		
 	}
+	
+	private Result editinsertDataHelper(String permissionType,String id) {
+	 	boolean isSuccess=false;
+		String message="";
+		int accesslevel=0;
+		Result r = null ;
+		
+		QueryBean b = null;
+	 	String checkSql="select level_name from levelinfo where level_name = '"+permissionType+"'";
+	   String levelInfoSql = "insert into levelinfo values (?,?)";
+	   
+	   Vector<String> vtrParams = new Vector<>();
+	   
+	   Boolean bl =false;
+	   
+	   
+	    try {
+	    	
+			b = new QueryBean("qb", false, "utf-8", "utf-8");
+			
+			ArrayList<ArrayList<Object>> al = b.querySQL(checkSql);
+			
+			System.out.println("id "+id);
+			
+			if(al!=null) {
+				message="the name already exists in the database,insertion fail!";
+				r= new Result(isSuccess,message,accesslevel);
+				System.out.println(message);
+				return r;
+				
+				
+			}
+			
+			accesslevel=Integer.parseInt(id);
+			
+			vtrParams.add(id);
+			vtrParams.add(permissionType);
+			
+		
+			
+			 isSuccess=b.executeSQL(levelInfoSql, vtrParams);
+			
+			 if(isSuccess) {
+				 message="levelinfo insertion successful";
+				 
+				 r = new Result(isSuccess, message, accesslevel);
+				 System.out.println(message);
+				 
+				 return r;
+			 }
+			 else {
+				 message="database error";
+				 r = new Result(isSuccess, message, accesslevel);
+				 
+				 return r;
+			 }
+			
+			
+			
+		} catch (Exception e) {
+			 e.printStackTrace();
+
+		}
+	    finally {
+	    	if (b != null) {
+	    		b.setAutoCommitMode(false);
+				try {
+					b.close();
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+			}
+			b = null;
+	    }
+	return r;
+}
 	/**
 	 * addConfrim
 	 * @return
@@ -676,7 +764,7 @@ public class pageManaServlet extends HttpServlet {
 			QueryBean b = null;
 		 	String checkSql="select level_name from levelinfo where level_name = '"+permissionType+"'";
 		   String levelInfoSql = "insert into levelinfo values (?,?)";
-		 
+		   String idSql="select access_level from levelinfo where access_level = '"+permissionType+"'";
 		   Vector<String> vtrParams = new Vector<>();
 		   
 		   Boolean bl =false;
@@ -687,6 +775,7 @@ public class pageManaServlet extends HttpServlet {
 				b = new QueryBean("qb", false, "utf-8", "utf-8");
 				
 				ArrayList<ArrayList<Object>> al = b.querySQL(checkSql);
+				
 				
 				if(al!=null) {
 					message="the name already exists in the database,insertion fail!";
@@ -750,6 +839,12 @@ public class pageManaServlet extends HttpServlet {
 	    private String message;
 	    private  int accessLevel;
 	   
+	    
+	    public Result() {
+	    	 this.isSuccess = false;
+		        this.message = "error";
+		        this.accessLevel= -1;
+	    }
 
 	    /**
 	     * Constructor for the Result class.
@@ -807,16 +902,15 @@ public class pageManaServlet extends HttpServlet {
 	    JSONObject jsonObject = new JSONObject();
 	    for (ArrayList<Object> subList : list) {
 	        if (!subList.isEmpty()) {
-	            // 將主菜單項目作為key
+	        
 	            String mainMenuKey = (String) subList.get(0);
 	            
-	            // 添加子菜單項目到新的ArrayList
 	            ArrayList<String> menuItems = new ArrayList<>();
 	            for (int i = 1; i < subList.size(); i++) { // Start from index 1 to skip the main menu item
 	                menuItems.add((String) subList.get(i));
 	            }
 
-	            // 將主菜單key和菜單項目列表添加到JSONObject
+	           
 	            jsonObject.put(mainMenuKey, menuItems);
 	        }
 	    }
@@ -840,15 +934,15 @@ public class pageManaServlet extends HttpServlet {
 	        b = new QueryBean("qb", false, "utf-8", "utf-8");
 	        mainMenu = b.querySQL(mainMenuSql);
 
-	        // 對每個主菜單項目進行遍歷
+	        
 	        for (ArrayList<Object> mainRow : mainMenu) {
-	            String mainMenuItem = (String) mainRow.get(0);  // 取得主菜單項目
+	            String mainMenuItem = (String) mainRow.get(0);  
 
-	            // 找到對應的子菜單項目
+	            
 	            String subPageSql = "select page_name from page where prev_name = '" + mainMenuItem + "'";
 	            ArrayList<ArrayList<Object>> subPageAl = b.querySQL(subPageSql);
 	            
-	            // 檢查subPageAl是否為null或空
+	            
 	            if (subPageAl != null && !subPageAl.isEmpty()) {
 	              
 	                for (ArrayList<Object> subRow : subPageAl) {

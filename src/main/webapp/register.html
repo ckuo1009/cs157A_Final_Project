@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html>
 <head>
 <meta charset="BIG5">
@@ -70,9 +70,27 @@ font-size: 24px;
             <div class="input-custom-width mb-3">
               <input type="password" class="form-control form-control-lg" id="password" placeholder="Password">
             </div>
+            <div class="input-custom-width mb-3">
+  <input type="text" class="form-control form-control-lg" id="name" placeholder="Name">
+</div>
             <div class="input-custom-width text-center">
               <button type="submit" class="btn btn-color btn-lg px-5 mb-5 w-100">Register</button>
             </div>
+            <!-- User Type Selection -->
+<div class="form-check mb-3">
+<input class="form-check-input" type="radio" name="userType" id="customer" value="customer">
+<label class="form-check-label" for="customer">
+customer
+</label>
+</div>
+<div class="form-check mb-3">
+<input class="form-check-input" type="radio" name="userType" id="store" value="store">
+<label class="form-check-label" for="store">
+store
+</label>
+</div>
+            
+            
             <div id="emailHelp" class="form-text text-center mb-5 text-white">
              <p class = "size">Already have an account?</p>
              <br>
@@ -123,42 +141,50 @@ $(document).ready(function() {
 
   $('.form-custom-width').on('submit', function(event) {
     event.preventDefault();
-    
+
+    var userType = $('input[name="userType"]:checked').val();
     var account = $('#Username').val();
     var password = $('#password').val();
+    var name = $('#name').val();
+
+    if (!userType || !account || !password || !name) {
+      $('#modalMessage').text('Please fill in all fields and select a user type.');
+      $('#messageModal').modal('show');
+      return;
+    }
 
     $.ajax({
       url: 'registerServlet',
       type: 'POST',
       data: {
         account: account,
-        password: password
+        password: password,
+        userType: userType,  // pass the userType to your server
+        name: name  // pass the name to your server
       },
       success: function(data) {
-    	  var status = data.status;
-    	  var message = data.message;
+        var status = data.status;
+        var message = data.message;
 
-    	  $('#modalMessage').text(message);
-    	  $('#messageModal').modal('show');
+        $('#modalMessage').text(message);
+        $('#messageModal').modal('show');
 
-    	  if (status === 'success') {
-    	    // Show success message and redirect after 2 seconds
-    	    setTimeout(function(){
-    	      $("body").fadeOut(2000, function() {
-    	        window.location.href = "login.html";
-    	      });
-    	    }, 1500);
-    	  }
-    	},
-    	error: function(jqXHR, textStatus, errorThrown) {
-    	  $('#modalMessage').text('An error occurred... Look at the console (F12 or Ctrl+Shift+I, Console tab) for more information!');
-    	  $('#messageModal').modal('show');
+        if (status === 'success') {
+          setTimeout(function(){
+            $("body").fadeOut(2000, function() {
+              window.location.href = "login.html";
+            });
+          }, 1500);
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        $('#modalMessage').text('An error occurred... Look at the console (F12 or Ctrl+Shift+I, Console tab) for more information!');
+        $('#messageModal').modal('show');
 
-    	  console.log('jqXHR:', jqXHR);
-    	  console.log('textStatus:', textStatus);
-    	  console.log('errorThrown:', errorThrown);
-    	}
-
+        console.log('jqXHR:', jqXHR);
+        console.log('textStatus:', textStatus);
+        console.log('errorThrown:', errorThrown);
+      }
     });
   });
 });

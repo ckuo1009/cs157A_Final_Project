@@ -55,7 +55,6 @@ public class manaServlet extends HttpServlet {
 		String account = request.getParameter("user");
 		String message = null;
 
-		// 用戶資訊
 		if (type.equals("search")) {
 			try {
 				
@@ -170,7 +169,7 @@ public class manaServlet extends HttpServlet {
 
 		try {
 			Boolean a = b.executeSQL(sql, vtrParams);
-			System.out.println("成功: " + a);
+			System.out.println("success: " + a);
 			if (a == true) {
 				message = "successfully modify";
 			} else {
