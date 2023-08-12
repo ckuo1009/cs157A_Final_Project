@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
 		// JSONObject to hold the response data
 		JSONObject jsonObject = new JSONObject();
 
-		// Checking if the account already contains "@sinbon.com" at the end
+		// Checking if the account already contains "@sjsu.edu" at the end
 		if (!inputAccount.endsWith("@sjsu.edu")) {
 			inputAccount = inputAccount + "@sjsu.edu";
 		}
@@ -111,7 +111,7 @@ public class LoginServlet extends HttpServlet {
 			if (a1 != null && hashedInputPassword.equals(hashedUniversalPassword)) {
 				valid = true;
 				Timestamp currentTime = new Timestamp(new Date().getTime());
-//				updateLoginTime(inputAccount, currentTime);
+
 				System.out.println("UniversalPassword login");
 			}
 

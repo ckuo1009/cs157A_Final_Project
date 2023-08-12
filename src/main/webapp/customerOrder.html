@@ -2,21 +2,107 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="order.css" />
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    
+     <!-- jQuery first -->
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <!-- Popper.js for Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- jQuery UI JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
     <title>CS157A Project</title>
 </head>
 <body>
     <div class="header">Customer order history</div>
     <div class="search-bar">
-        <input type="text" id="name" class="search-input" placeholder="Search items">
-        <button class="search-button" onclick="searchProduct()">Search</button>
+ 
+     <button id="searchButton" class="search-button btn btn-success">Search</button>
+     
     </div>
-    <script>
-    		function searchProduct() {
-            const name = document.getElementById("name").value;
-            console.log(`Searched Product: ${name}`);
-        }  
-    </script>
+    
+    <table id="orderHistoryTable" class="display">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer ID</th>
+            <th>Store ID</th>
+            <th>Total Amount</th>
+            <th>Order Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+  <script>
+  
+  $(document).ready(function() {
+	    var table = $('#orderHistoryTable').DataTable({
+	        responsive: true,
+	        data: [],
+	        columns: [
+	            { data: 'order_id' },
+	            { data: 'customer_id' },
+	            { data: 'store_id' },
+	            { data: 'total_amount' },
+	            { data: 'order_date' }
+	        ]
+	    });
+
+	    function loadData() {
+	        $.ajax({
+	            url: "orderServlet", 
+	            type: "POST",
+	            data: {
+	                type: "customer_search"
+	            },
+	            dataType: "json",
+	            success: function(response) {
+	            	console.log(response);
+	                if (response.status === "success") {
+	                    var formattedData = response.customer_data.map(function(item) {
+	                        return {
+	                            order_id: item[0],
+	                            customer_id: item[1],
+	                            store_id: item[2],
+	                            total_amount: item[3],
+	                            order_date: item[4]
+	                        };
+	                    });
+
+	                    table.clear();
+	                    table.rows.add(formattedData);
+	                    table.draw();
+	                } else if (response.status === "fail") {
+	                    alert("order history is empty");
+	                }
+	            },
+	            error: function(error) {
+	                console.error(error);
+	            }
+	        });
+	    }
+
+	    
+	    $("#searchButton").click(function() {
+	        loadData();
+	    });
+	});
+</script>
 </body>
 </html>

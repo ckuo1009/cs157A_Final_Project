@@ -565,7 +565,7 @@ public class pageManaServlet extends HttpServlet {
 			// call helper method
 			 r = editinsertDataHelper(permissionType,id);
 		}
-		// call helper method
+		
 		
 	
 		boolean isSuccess=false;
@@ -816,9 +816,7 @@ public class pageManaServlet extends HttpServlet {
 				
 			} catch (Exception e) {
 				 e.printStackTrace();
-//				    isSuccess = false;
-//				    message = "An exception occurred: " + e.getMessage();
-//				    r = new Result(isSuccess, message, accesslevel);
+
 			}
 		    finally {
 		    	if (b != null) {
@@ -983,20 +981,14 @@ public class pageManaServlet extends HttpServlet {
 	 */
 	private ArrayList<ArrayList<Object>> getData() throws Exception {
 		String sql = "select * from levelinfo";
-		ArrayList<ArrayList<Object>> a =null;;
+		ArrayList<ArrayList<Object>> a =null;
 		QueryBean b= null;
 		try {
 			 b = new QueryBean("qb", false, "utf-8", "utf-8");
 
 			a = b.querySQL(sql);
 
-//			for (ArrayList<Object> innerList : a) {
-//				for (Object obj : innerList) {
-//					System.out.print(obj + " ");
-//				}
-//
-//				System.out.println();
-//			}
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1020,3 +1012,5 @@ public class pageManaServlet extends HttpServlet {
 	
 
 }
+
+

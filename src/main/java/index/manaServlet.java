@@ -86,7 +86,7 @@ public class manaServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 
-			// 修改權限
+		
 		} else if (type.equals("modify")) {
 
 			try {
