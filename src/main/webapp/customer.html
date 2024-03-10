@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add or Search Product</title>
+     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    
+     <!-- jQuery first -->
+    <script src="js/jquery-3.3.1.js"></script>
+
+    <!-- Popper.js for Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- jQuery UI JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="form-inline mb-3">
+            <label for="productName" class="mr-2">Product Name:</label>
+            <input type="text" class="form-control input-field mr-2" id="productName" name="productName" style="width: 200px;">
+            <button class="btn btn-success" onclick="searchProduct()">Search</button>
+			<button id="purchaseButton" class="btn btn-success">purchase</button>
+        </div>
+        <table id="productTable" class="display" style="width:100%; display:none">
+            <thead>
+                  <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Type</th>
+                    <th>Store Name</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Number</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted here with AJAX -->
+            </tbody>
+        </table>
+    </div>
+    		<!-- Modal -->
+<div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="purchaseModalLabel">Purchase Summary</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- This is where the table will be inserted -->
+        <table id="modalTable" class="table">
+          <thead>
+            <tr>
+              <th scope="col">Product Name</th>
+              <th scope="col">Product Type</th>
+              <th scope="col">Store Name</th>
+              <th scope="col">Price</th>
+              <th scope="col">Number</th>
+              <th scope="col">Total Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+       
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+    
+ <script>
+    // Define the function outside of $(document).ready()
+    
+    window.sendDataToServer = function() {
+    let selectedProducts = [];
+    let totalAmount = 0;
+
+    
+    $('#modalTable tbody tr').each(function() {
+        let productName = $(this).find('td').eq(0).text();
+        let storeName = $(this).find('td').eq(2).text();
+        let number = $(this).find('td').eq(4).text();
+        let rowTotalAmount = $(this).find('td').eq(5).text();
+
+        if(productName && storeName && number) {
+            selectedProducts.push({
+                productName: productName,
+                storeName: storeName,
+                number: number 
+            });
+            totalAmount += parseFloat(rowTotalAmount);
+        }
+    });
+
+    if(selectedProducts.length > 0) {
+        
+        let dataToSend = {
+            type: "purchase",
+            products: selectedProducts,
+            totalAmount: totalAmount.toFixed(2)
+        };
+
+       
+        $.ajax({
+            url: 'customerServlet',
+            type: 'POST',
+            data: {
+                type: 'purchase',
+                products: JSON.stringify(selectedProducts),
+                totalAmount: totalAmount
+            },
+           
+            dataType: "json",
+            success: function(response) {
+               
+            	if(response.status === "success") {
+                    alert("Success: " + response.message);
+                } else if(response.status === "fail") {
+                    alert("Failed: " + response.message);
+                } else {
+                    alert("Unexpected response from the server.");
+                }
+            },
+            error: function(error) {
+                console.error(error);
+                alert("Error sending data.");
+            }
+        });
+    }
+};
+
+ window.showPurchaseModal = function() {
+    let table = $('#productTable').DataTable();
+    let totalAmount = 0;
+    let data = [];
+
+    table.$('input[type="checkbox"]:checked').each(function() {
+        let row = $(this).parents('tr');
+        let productName = table.row(row).data()[1];
+        let productType = table.row(row).data()[2];
+        let storeName = table.row(row).data()[3];
+        let price = parseFloat(table.row(row).data()[4]);
+        let number = $(this).parent().siblings().find('input[type="number"]').val();
+        let subTotal = price * number;
+
+        totalAmount += subTotal;
+
+       
+        data.push([productName, productType, storeName, price.toFixed(2), number, subTotal.toFixed(2)]);
+    });
+
+    let modalContent = '<table id="modalTable" class="table"></table>';
+    modalContent += 'Total = ' + totalAmount.toFixed(2);
+
+    
+    $('#purchaseModal .modal-body').html(modalContent);
+    $('#modalTable').DataTable({
+        data: data,
+        columns: [
+            { title: "Product Name" },
+            { title: "Product Type" },
+            { title: "Store Name" },
+            { title: "Price" },
+            { title: "Number" },
+            { title: "Total Amount" }
+        ]
+    });
+    $('#purchaseModal').modal('show');
+};
+
+
+    $(document).ready(function() {
+        $('#productTable').DataTable();
+        
+        $('#confirmButton').click(function() {
+            sendDataToServer();
+        });
+        
+        $('#purchaseButton').click(function(){
+            showPurchaseModal();
+        });
+        
+        window.searchProduct = function() {
+            const productName = $("#productName").val();  
+
+            $.ajax({
+                url: 'customerServlet',
+                type: 'POST',
+                data: {
+                    type: 'search',
+                    keyword: productName
+                },
+                success: function(response) {
+                    const status = response.status;
+                    if (status === "success") {
+                        const data = response.store_data;
+                        let dataSet = data.map(product => [
+                            product[0],  // Product ID
+                            product[1],  // Product Name
+                            product[2],  // Type
+                            product[3],  // Store Name
+                            product[4],  // Price
+                            product[5],  // Stock
+                            '<input type="number" value="1">',  // Number
+                            '<input type="checkbox">'  // Select
+                        ]);
+
+                        let table = $('#productTable').DataTable();
+                        table.clear();
+                        table.rows.add(dataSet).draw();
+                        $('#productTable').show();
+                    } else if (status === "fail") {
+                        alert("Searching result is empty.");
+                    } else {
+                        alert("Error！");
+                    }
+                },
+                error: function(error) {
+                    console.error(error);
+                    alert("Error");
+                }
+            });
+        };
+    });
+</script>
+    
+</body>
+</html>
